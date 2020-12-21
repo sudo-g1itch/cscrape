@@ -102,6 +102,7 @@ function decodeItem(cypher){
       }
     });
     credsWindow.webContents.executeJavaScript('localStorage.setItem("am-I-Idle?", "0")');
+    credsWindow.setMenuBarVisibility(false);
     credsWindow.loadFile('index.html');
   }
   function linkedIn(){
@@ -281,7 +282,7 @@ app.whenReady().then(() => {
     if(error || data == '   ' || !data){
       userCreds();
     }else{
-      tinyWindow = new BrowserWindow({resizable:false,frame:false,icon: iconLocation,skipTaskbar: true,height:500,width:400,alwaysOnTop:true,
+      tinyWindow = new BrowserWindow({resizable:false,frame:false,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
         webPreferences:{
           preload: path.join(__dirname, 'preload.js'),
           nodeIntegration : true,
@@ -290,6 +291,7 @@ app.whenReady().then(() => {
         }
       });
       tinyWindow.loadFile('sync.html');
+      tinyWindow.setMenuBarVisibility(false);
        // Minimized Functionality 
        tinyWindow.on('minimize',function(event){
         event.preventDefault();
