@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <script>
+            getRandomImage();
+            function getRandomImage() {
+                localStorage.removeItem('error');
+                random_images_array = ['img1.gif','img2.gif','img3.gif','img4.gif','img5.gif','img6.gif'];
+                path = 'icons/success/';
+                var num = Math.floor( Math.random() * random_images_array.length );
+                var img = random_images_array[ num ];
+                var imgStr = '<img src="' + path + img + '" alt = "">';
+                document.write(imgStr); 
+                document.close();
+            }
+        </script>
+        <h2 class="nerko"> Account Successfully Connected. <br> Automation in progress.</h2>
+    </div>
+
+</body>
+<style>
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    div {
+        display: block;
+        margin-top: 25%;
+    }
+    
+    img { border:none; height: 125px;display: block;margin: auto auto !important;}
+    .nerko {
+        font-family: nerko;
+        text-align: center;
+        font-size: 18px;
+    }
+    @font-face {
+        font-family: nerko;
+        src: url(icons/font/gdog.TTF);
+    }
+</style>
+</html>

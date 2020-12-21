@@ -1,0 +1,8 @@
+node_modules
+creds
+release-builds
+data/user.joel
+CScrapeIN-win32-x64.7z
+CScrapeIN-win32-x64.zip
+dist/
+yarn.lock
