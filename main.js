@@ -121,7 +121,7 @@ function decodeItem(cypher){
         decryptedPass = decodeItem(cypherPass);
 
 
-        var newWindow = new BrowserWindow({icon: iconLocation,skipTaskbar: true,show:true,
+        var newWindow = new BrowserWindow({icon: iconLocation,skipTaskbar: true,show:false,
           webPreferences:{
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration : true,
@@ -282,7 +282,7 @@ app.whenReady().then(() => {
     if(error || data == '   ' || !data){
       userCreds();
     }else{
-      tinyWindow = new BrowserWindow({resizable:false,frame:false,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
+      tinyWindow = new BrowserWindow({resizable:false,frame:true,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
         webPreferences:{
           preload: path.join(__dirname, 'preload.js'),
           nodeIntegration : true,
