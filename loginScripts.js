@@ -1,7 +1,9 @@
 const $ = require('jquery');
 const fs = require('fs');
 const CryptoJS = require('crypto-js');
+const app = require('electron').remote.app;
 const { remote } = require('electron');
+const path = require('path');
 
 
 var click = true;
@@ -42,14 +44,15 @@ function login(){
     encryptedUsername = encodeItem(username);
     encryptedPassword = encodeItem(password);
 
-    fs.readdir(__dirname + '/data/', (error) => {
+    fs.readdir(app.getPath('userData') + '/applicationData/', (error) => {
         if (error) {
-            console.log(error);
+            console.log('error here');
+            //console.log(error);
             //fs.mkdirSync(__dirname + '/data/', (error) => {
                 // if (error) {
                 //     console.log(error);
         }else{
-                    fs.writeFileSync(__dirname+'/data/me.joel', encryptedUsername+'   '+encryptedPassword);
+                    fs.writeFileSync(app.getPath('userData')+'/applicationData/me.joel', encryptedUsername+'   '+encryptedPassword);
                     remote.app.relaunch();
                     window.close();
         //  }

@@ -27,12 +27,12 @@ function appReadyCall(){
 
 
 function generateUserId(){
-  fs.readdir(__dirname + '/data/', (error) => {
+  fs.readdir(app.getPath('userData') + '/applicationData/', (error) => {
     if (error) {
       console.log(error);
-      fs.mkdir(__dirname + '/data/', (error) => {
+      fs.mkdir(app.getPath('userData') + '/applicationData/', (error) => {
           if (!error) {
-            fs.writeFileSync(__dirname+'/data/user.joel', randomString(32));
+            fs.writeFileSync(app.getPath('userData')+'/applicationData/user.joel', randomString(32));
           }
       });
     }
@@ -44,10 +44,10 @@ function generateUserId(){
 
 function appendToLinkCollection(linksToAppend, currentWindow){
     //add single link to array code here 
-    fs.readFile(__dirname+'/data/linkCol.json', (error,data) =>{
+    fs.readFile(app.getPath('userData')+'/applicationData/linkCol.json', (error,data) =>{
       if(!error){
         if(data == null || data == '' || !data){
-          fs.writeFileSync(__dirname+'/data/linkCol.json', '["'+linksToAppend+'"]');
+          fs.writeFileSync(app.getPath('userData')+'/applicationData/linkCol.json', '["'+linksToAppend+'"]');
           currentWindow.webContents.executeJavaScript('localStorage.removeItem("linkToAppend")');
         }else if(data != null || data != '' || data ){
           var tempArray = [];
@@ -59,7 +59,7 @@ function appendToLinkCollection(linksToAppend, currentWindow){
           });
           tempArray.push('"'+linksToAppend+'"');
           console.log(tempArray);
-          fs.writeFileSync(__dirname+'/data/linkCol.json', '['+tempArray+']');
+          fs.writeFileSync(app.getPath('userData')+'/applicationData/linkCol.json', '['+tempArray+']');
           currentWindow.webContents.executeJavaScript('localStorage.removeItem("linkToAppend")');
         }
       }
@@ -110,7 +110,7 @@ function decodeItem(cypher){
     var cypherPass;
     var decryptedUser;
     var decryptedPass;
-    fs.readFile(__dirname + '/data/me.joel','utf-8', (error, data) =>{
+    fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
       if(error){
         console.log(error);
       }else{
@@ -121,7 +121,7 @@ function decodeItem(cypher){
         decryptedPass = decodeItem(cypherPass);
 
 
-        var newWindow = new BrowserWindow({icon: iconLocation,skipTaskbar: true,show:false,
+        var newWindow = new BrowserWindow({icon: iconLocation,skipTaskbar: true,show:true,
           webPreferences:{
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration : true,
@@ -131,9 +131,9 @@ function decodeItem(cypher){
           } 
         });
         newWindow.webContents.executeJavaScript('localStorage.setItem("am-I-Idle?", "0")');
-      fs.readFile(__dirname + '/data/linkCol.json','utf-8', (error, data) =>{
+      fs.readFile(app.getPath('userData') + '/applicationData/linkCol.json','utf-8', (error, data) =>{
         if(error || data == '' || !data){
-          fs.writeFileSync(__dirname+'/data/linkCol.json', '');
+          fs.writeFileSync(app.getPath('userData')+'/applicationData/linkCol.json', '');
         }else{
           newWindow.webContents.executeJavaScript('localStorage.setItem("likedPosts",JSON.stringify('+data+'))',true);
         }
@@ -172,7 +172,7 @@ function decodeItem(cypher){
                   setTimeout(()=>{
                     tinyWindow.hide();
                   },10000);
-                  fs.unlink(__dirname + '/data/me.joel', function(error){
+                  fs.unlink(app.getPath('userData') + '/applicationData/me.joel', function(error){
                       newWindow.webContents.executeJavaScript('localStorage.removeItem("username-error")', true);
                       clearInterval(checkPassInterval);
                       newWindow.close();
@@ -186,7 +186,7 @@ function decodeItem(cypher){
                   setTimeout(()=>{
                     tinyWindow.hide();
                   },10000);
-                  fs.unlink(__dirname + '/data/me.joel', function(error){
+                  fs.unlink(app.getPath('userData') + '/applicationData/me.joel', function(error){
                       newWindow.webContents.executeJavaScript('localStorage.removeItem("password-error")', true);
                       clearInterval(checkPassInterval);
                       newWindow.close();
@@ -271,14 +271,14 @@ function decodeItem(cypher){
     });
   }
 app.whenReady().then(() => {
-  fs.readFile(__dirname + '/data/user.joel','utf-8', (error, data) =>{
+  fs.readFile(app.getPath('userData') + '/applicationData/user.joel','utf-8', (error, data) =>{
     if(error || data == '' || !data){
       generateUserId();
     }else{
       userID = data;
     }
   });
-  fs.readFile(__dirname + '/data/me.joel','utf-8', (error, data) =>{
+  fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
     if(error || data == '   ' || !data){
       userCreds();
     }else{
