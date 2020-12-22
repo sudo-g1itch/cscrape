@@ -27,12 +27,12 @@ function appReadyCall(){
 
 
 function generateUserId(){
-  fs.readdir(__dirname + '/data/', (error) => {
+  fs.readdir(app.getPath('userData') + '/applicationData/', (error) => {
     if (error) {
       console.log(error);
-      fs.mkdir(__dirname + '/data/', (error) => {
+      fs.mkdir(app.getPath('userData') + '/applicationData/', (error) => {
           if (!error) {
-            fs.writeFileSync(__dirname+'/data/user.joel', randomString(32));
+            fs.writeFileSync(app.getPath('userData')+'/applicationData/user.joel', randomString(32));
           }
       });
     }
@@ -44,10 +44,10 @@ function generateUserId(){
 
 function appendToLinkCollection(linksToAppend, currentWindow){
     //add single link to array code here 
-    fs.readFile(__dirname+'/data/linkCol.json', (error,data) =>{
+    fs.readFile(app.getPath('userData')+'/applicationData/linkCol.json', (error,data) =>{
       if(!error){
         if(data == null || data == '' || !data){
-          fs.writeFileSync(__dirname+'/data/linkCol.json', '["'+linksToAppend+'"]');
+          fs.writeFileSync(app.getPath('userData')+'/applicationData/linkCol.json', '["'+linksToAppend+'"]');
           currentWindow.webContents.executeJavaScript('localStorage.removeItem("linkToAppend")');
         }else if(data != null || data != '' || data ){
           var tempArray = [];
@@ -59,7 +59,7 @@ function appendToLinkCollection(linksToAppend, currentWindow){
           });
           tempArray.push('"'+linksToAppend+'"');
           console.log(tempArray);
-          fs.writeFileSync(__dirname+'/data/linkCol.json', '['+tempArray+']');
+          fs.writeFileSync(app.getPath('userData')+'/applicationData/linkCol.json', '['+tempArray+']');
           currentWindow.webContents.executeJavaScript('localStorage.removeItem("linkToAppend")');
         }
       }
@@ -110,7 +110,7 @@ function decodeItem(cypher){
     var cypherPass;
     var decryptedUser;
     var decryptedPass;
-    fs.readFile(__dirname + '/data/me.joel','utf-8', (error, data) =>{
+    fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
       if(error){
         console.log(error);
       }else{
@@ -131,9 +131,9 @@ function decodeItem(cypher){
           } 
         });
         newWindow.webContents.executeJavaScript('localStorage.setItem("am-I-Idle?", "0")');
-      fs.readFile(__dirname + '/data/linkCol.json','utf-8', (error, data) =>{
+      fs.readFile(app.getPath('userData') + '/applicationData/linkCol.json','utf-8', (error, data) =>{
         if(error || data == '' || !data){
-          fs.writeFileSync(__dirname+'/data/linkCol.json', '');
+          fs.writeFileSync(app.getPath('userData')+'/applicationData/linkCol.json', '');
         }else{
           newWindow.webContents.executeJavaScript('localStorage.setItem("likedPosts",JSON.stringify('+data+'))',true);
         }
@@ -172,7 +172,7 @@ function decodeItem(cypher){
                   setTimeout(()=>{
                     tinyWindow.hide();
                   },10000);
-                  fs.unlink(__dirname + '/data/me.joel', function(error){
+                  fs.unlink(app.getPath('userData') + '/applicationData/me.joel', function(error){
                       newWindow.webContents.executeJavaScript('localStorage.removeItem("username-error")', true);
                       clearInterval(checkPassInterval);
                       newWindow.close();
@@ -186,7 +186,7 @@ function decodeItem(cypher){
                   setTimeout(()=>{
                     tinyWindow.hide();
                   },10000);
-                  fs.unlink(__dirname + '/data/me.joel', function(error){
+                  fs.unlink(app.getPath('userData') + '/applicationData/me.joel', function(error){
                       newWindow.webContents.executeJavaScript('localStorage.removeItem("password-error")', true);
                       clearInterval(checkPassInterval);
                       newWindow.close();
@@ -270,54 +270,80 @@ function decodeItem(cypher){
       }
     });
   }
-app.whenReady().then(() => {
-  fs.readFile(__dirname + '/data/user.joel','utf-8', (error, data) =>{
-    if(error || data == '' || !data){
-      generateUserId();
-    }else{
-      userID = data;
-    }
-  });
-  fs.readFile(__dirname + '/data/me.joel','utf-8', (error, data) =>{
-    if(error || data == '   ' || !data){
-      userCreds();
-    }else{
-      tinyWindow = new BrowserWindow({resizable:false,frame:true,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
-        webPreferences:{
-          preload: path.join(__dirname, 'preload.js'),
-          nodeIntegration : true,
-          enableRemoteModule: true,
-          allowRunningInsecureContent: true
-        }
-      });
-      tinyWindow.loadFile('sync.html');
-      tinyWindow.setMenuBarVisibility(false);
-       // Minimized Functionality 
-       tinyWindow.on('minimize',function(event){
-        event.preventDefault();
-        tinyWindow.hide();
-      });
-      tinyWindow.on('close', function (event) {
-        if(!app.isQuiting){
-          event.preventDefault();
-          tinyWindow.hide();
-        }
-        return false;
-      });
 
-      appReadyCall();
-    }
-  });
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) credsWindow()
-  });
-});
+  function runApp(){
+    app.whenReady().then(() => {
+      fs.readFile(app.getPath('userData') + '/applicationData/user.joel','utf-8', (error, data) =>{
+        if(error || data == '' || !data){
+          generateUserId();
+        }else{
+          userID = data;
+        }
+      });
+      fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
+        if(error || data == '   ' || !data){
+          userCreds();
+        }else{
+          tinyWindow = new BrowserWindow({resizable:false,frame:true,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
+            webPreferences:{
+              preload: path.join(__dirname, 'preload.js'),
+              nodeIntegration : true,
+              enableRemoteModule: true,
+              allowRunningInsecureContent: true
+            }
+          });
+          tinyWindow.loadFile('sync.html');
+          tinyWindow.setMenuBarVisibility(false);
+          // Minimized Functionality 
+          tinyWindow.on('minimize',function(event){
+            event.preventDefault();
+            tinyWindow.hide();
+          });
+          tinyWindow.on('close', function (event) {
+            if(!app.isQuiting){
+              event.preventDefault();
+              tinyWindow.hide();
+            }
+            return false;
+          });
+
+          appReadyCall();
+        }
+      });
+      app.on('activate', function () {
+        if (BrowserWindow.getAllWindows().length === 0) credsWindow()
+      });
+    });
+  }
+
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 });
 
+
+// Application wont launch test case - call runApp()
+
+
 app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
+  console.log('Please wait while we check for updates');
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Updation Checking');
+  });
+  autoUpdater.on('update-available', (ev, info) => {
+    console.log(ev+":"+info);
+  })
+  autoUpdater.on('update-not-available', (ev, info) => {
+    console.log(ev+":"+info);
+  })
+  autoUpdater.on('error', (ev, err) => {
+    console.log(ev+":"+info);
+  })
+  autoUpdater.on('download-progress', (ev, progressObj) => {
+    console.log(ev+":"+progressObj);
+  })
+  autoUpdater.on('update-downloaded', (ev, info) => {
+    console.log(ev+":"+info);
+  });
 });
 //Error - onblick inbetween causing issue -> causing HRtalk to repeat
     // Goes to am_I_idle

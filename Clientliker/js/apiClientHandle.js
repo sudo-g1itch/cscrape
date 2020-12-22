@@ -4,8 +4,8 @@ let threadInProgress = false;
 var longRandomNumber;
 var perIteration = 0;
 var totalAck = 0;
-var min = 100000;
-var max = 180000;
+var min = 250000;
+var max = 550000;
 var activeUserID;
 var activeUserName;
 
@@ -16,7 +16,7 @@ $(()=>{
 
 
 function longRandom(){
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(Math.random() * 10 *  (max - min + 1) + min);
 }
 
 function whoAmI(){
@@ -61,13 +61,13 @@ function getPosts(){
                                     if(mainIndex == 0){
                                         setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
                                     }else{
-                                        setTimeout(openWindow, longRandom() * mainIndex * 4, response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
+                                        setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
                                     }
                                 }else{
                                     if(mainIndex == 0){
-                                        setTimeout(openWindow, longRandom() * 4, response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
+                                        setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
                                     }else{
-                                        setTimeout(openWindow, longRandom() * mainIndex * 6, response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);        
+                                        setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);        
                                     }
                                 }
                             }
@@ -86,15 +86,15 @@ function getPosts(){
                                     totalLinksCounter++;
                                     if(localIndex == 0){
                                         if(mainIndex == 0){
-                                            setTimeout(openWindow, longRandom() * 3, response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
+                                            setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
                                         }else{
-                                            setTimeout(openWindow, longRandom() * mainIndex * 5, response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
+                                            setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
                                         }
                                     }else{
                                         if(mainIndex == 0){
-                                            setTimeout(openWindow, longRandom() * (localIndex + 7), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
+                                            setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);    
                                         }else{
-                                            setTimeout(openWindow, longRandom() * (mainIndex + 9), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);        
+                                            setTimeout(openWindow, longRandom(), response.data[mainIndex].linkCollection[localIndex], response.data[mainIndex].linkCollection.length, response.data[mainIndex].companyName);        
                                         }
                                     }
                                 }
