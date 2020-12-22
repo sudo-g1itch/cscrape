@@ -271,50 +271,50 @@ function decodeItem(cypher){
     });
   }
 
-  function runApp(){
-    app.whenReady().then(() => {
-      fs.readFile(app.getPath('userData') + '/applicationData/user.joel','utf-8', (error, data) =>{
-        if(error || data == '' || !data){
-          generateUserId();
-        }else{
-          userID = data;
-        }
-      });
-      fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
-        if(error || data == '   ' || !data){
-          userCreds();
-        }else{
-          tinyWindow = new BrowserWindow({resizable:false,frame:true,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
-            webPreferences:{
-              preload: path.join(__dirname, 'preload.js'),
-              nodeIntegration : true,
-              enableRemoteModule: true,
-              allowRunningInsecureContent: true
-            }
-          });
-          tinyWindow.loadFile('sync.html');
-          tinyWindow.setMenuBarVisibility(false);
-          // Minimized Functionality 
-          tinyWindow.on('minimize',function(event){
-            event.preventDefault();
-            tinyWindow.hide();
-          });
-          tinyWindow.on('close', function (event) {
-            if(!app.isQuiting){
-              event.preventDefault();
-              tinyWindow.hide();
-            }
-            return false;
-          });
+  // function runApp(){
+  //   app.whenReady().then(() => {
+  //     fs.readFile(app.getPath('userData') + '/applicationData/user.joel','utf-8', (error, data) =>{
+  //       if(error || data == '' || !data){
+  //         generateUserId();
+  //       }else{
+  //         userID = data;
+  //       }
+  //     });
+  //     fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
+  //       if(error || data == '   ' || !data){
+  //         userCreds();
+  //       }else{
+  //         tinyWindow = new BrowserWindow({resizable:false,frame:true,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
+  //           webPreferences:{
+  //             preload: path.join(__dirname, 'preload.js'),
+  //             nodeIntegration : true,
+  //             enableRemoteModule: true,
+  //             allowRunningInsecureContent: true
+  //           }
+  //         });
+  //         tinyWindow.loadFile('sync.html');
+  //         tinyWindow.setMenuBarVisibility(false);
+  //         // Minimized Functionality 
+  //         tinyWindow.on('minimize',function(event){
+  //           event.preventDefault();
+  //           tinyWindow.hide();
+  //         });
+  //         tinyWindow.on('close', function (event) {
+  //           if(!app.isQuiting){
+  //             event.preventDefault();
+  //             tinyWindow.hide();
+  //           }
+  //           return false;
+  //         });
 
-          appReadyCall();
-        }
-      });
-      app.on('activate', function () {
-        if (BrowserWindow.getAllWindows().length === 0) credsWindow()
-      });
-    });
-  }
+  //         appReadyCall();
+  //       }
+  //     });
+  //     app.on('activate', function () {
+  //       if (BrowserWindow.getAllWindows().length === 0) credsWindow()
+  //     });
+  //   });
+  // }
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
