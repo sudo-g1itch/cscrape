@@ -321,31 +321,49 @@ app.on('window-all-closed', function () {
 });
 
 
-// Application wont launch test case - call runApp()
-
 app.on('ready', function()  {
-  runApp();
-
-  console.log('Please wait while we check for updates');
-  autoUpdater.on('checking-for-update', () => {
-    console.log('Updation Checking');
-  });
-  autoUpdater.on('update-available', (ev, info) => {
-    console.log(ev+":"+info);
-  })
-  autoUpdater.on('update-not-available', (ev, info) => {
-    console.log(ev+":"+info);
-  })
-  autoUpdater.on('error', (ev, err) => {
-    console.log(ev+":"+info);
-  })
-  autoUpdater.on('download-progress', (ev, progressObj) => {
-    console.log(ev+":"+progressObj);
-  })
-  autoUpdater.on('update-downloaded', (ev, info) => {
-    console.log(ev+":"+info);
-  });
+  autoUpdater.checkForUpdatesAndNotify();
 });
+
+// Application wont launch test case - call runApp()
+//update progress bar
+// app.on('ready', function()  {
+
+//   console.log('Please wait while we check for updates');
+//   autoUpdater.on('checking-for-update', () => {
+//     console.log('Updation Checking');
+//   });
+//   autoUpdater.on('update-available', (ev, info) => {
+//     console.log(ev+":"+info);
+//   })
+//   autoUpdater.on('update-not-available', (ev, info) => {
+//     console.log(ev+":"+info);
+//   })
+//   autoUpdater.on('error', (ev, err) => {
+//     console.log(ev+":"+info);
+//   })
+//   autoUpdater.on('download-progress', (ev, progressObj) => {
+//     console.log(ev+":"+progressObj);
+//   })
+//   autoUpdater.on('update-downloaded', (ev, info) => {
+//     console.log(ev+":"+info);
+//   });
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Error - onblick inbetween causing issue -> causing HRtalk to repeat
     // Goes to am_I_idle
 
