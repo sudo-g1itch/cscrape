@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const CryptoJS = require('crypto-js');
 const {autoUpdater} = require("electron-updater");
+const log = require('electron-log');
 
 app.setLoginItemSettings({
   openAtLogin: true,
@@ -271,7 +272,7 @@ function decodeItem(cypher){
     });
   }
 
-  // function runApp(){
+  function runApp(){
     app.whenReady().then(() => {
       fs.readFile(app.getPath('userData') + '/applicationData/user.joel','utf-8', (error, data) =>{
         if(error || data == '' || !data){
@@ -314,51 +315,73 @@ function decodeItem(cypher){
         if (BrowserWindow.getAllWindows().length === 0) credsWindow()
       });
     });
-  // }
+  }
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 });
 
 
-app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
+// Application wont launch test case - call runApp()
+
+
+
+// updater codes
+
+
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
+let win;
+
+function sendStatusToWindow(text) {
+  log.info(text);
+  win.webContents.send('message', text);
+}
+function createDefaultWindow() {
+  win = new BrowserWindow({frame:false,height:400,width:300,
+    webPreferences:{
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration : true,
+      enableRemoteModule: true,
+      allowRunningInsecureContent: true
+    }
+  });
+  win.on('closed', () => {
+    win = null;
+  });
+  win.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
+  return win;
+}
+ 
+
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+})
+autoUpdater.on('update-available', (ev, info) => {
+  sendStatusToWindow('Update available.');
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+  win.close();
+  runApp();
+})
+autoUpdater.on('error', (ev, err) => {
+  sendStatusToWindow('Error in auto-updater.');
+})
+autoUpdater.on('download-progress', (ev, progressObj) => {
+  sendStatusToWindow('Download progress... : '+progressObj);
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+  setTimeout(()=>{
+    autoUpdater.quitAndInstall();  
+  },5000);
 });
 
-// Application wont launch test case - call runApp()
-//update progress bar
-// app.on('ready', function()  {
-
-//   console.log('Please wait while we check for updates');
-//   autoUpdater.on('checking-for-update', () => {
-//     console.log('Updation Checking');
-//   });
-//   autoUpdater.on('update-available', (ev, info) => {
-//     console.log(ev+":"+info);
-//   })
-//   autoUpdater.on('update-not-available', (ev, info) => {
-//     console.log(ev+":"+info);
-//   })
-//   autoUpdater.on('error', (ev, err) => {
-//     console.log(ev+":"+info);
-//   })
-//   autoUpdater.on('download-progress', (ev, progressObj) => {
-//     console.log(ev+":"+progressObj);
-//   })
-//   autoUpdater.on('update-downloaded', (ev, info) => {
-//     console.log(ev+":"+info);
-//   });
-// });
-
-
-
-
-
-
-
-
-
-
+app.on('ready', function() {
+  createDefaultWindow();
+});
 
 
 
