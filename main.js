@@ -121,7 +121,7 @@ function decodeItem(cypher){
         decryptedPass = decodeItem(cypherPass);
 
 
-        var newWindow = new BrowserWindow({icon: iconLocation,skipTaskbar: true,show:true,
+        var newWindow = new BrowserWindow({icon: iconLocation,skipTaskbar: true,show:false,
           webPreferences:{
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration : true,
@@ -270,54 +270,80 @@ function decodeItem(cypher){
       }
     });
   }
-app.whenReady().then(() => {
-  fs.readFile(app.getPath('userData') + '/applicationData/user.joel','utf-8', (error, data) =>{
-    if(error || data == '' || !data){
-      generateUserId();
-    }else{
-      userID = data;
-    }
-  });
-  fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
-    if(error || data == '   ' || !data){
-      userCreds();
-    }else{
-      tinyWindow = new BrowserWindow({resizable:false,frame:true,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
-        webPreferences:{
-          preload: path.join(__dirname, 'preload.js'),
-          nodeIntegration : true,
-          enableRemoteModule: true,
-          allowRunningInsecureContent: true
-        }
-      });
-      tinyWindow.loadFile('sync.html');
-      tinyWindow.setMenuBarVisibility(false);
-       // Minimized Functionality 
-       tinyWindow.on('minimize',function(event){
-        event.preventDefault();
-        tinyWindow.hide();
-      });
-      tinyWindow.on('close', function (event) {
-        if(!app.isQuiting){
-          event.preventDefault();
-          tinyWindow.hide();
-        }
-        return false;
-      });
 
-      appReadyCall();
-    }
-  });
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) credsWindow()
-  });
-});
+  function runApp(){
+    app.whenReady().then(() => {
+      fs.readFile(app.getPath('userData') + '/applicationData/user.joel','utf-8', (error, data) =>{
+        if(error || data == '' || !data){
+          generateUserId();
+        }else{
+          userID = data;
+        }
+      });
+      fs.readFile(app.getPath('userData') + '/applicationData/me.joel','utf-8', (error, data) =>{
+        if(error || data == '   ' || !data){
+          userCreds();
+        }else{
+          tinyWindow = new BrowserWindow({resizable:false,frame:true,icon: iconLocation,skipTaskbar: true,alwaysOnTop:true,
+            webPreferences:{
+              preload: path.join(__dirname, 'preload.js'),
+              nodeIntegration : true,
+              enableRemoteModule: true,
+              allowRunningInsecureContent: true
+            }
+          });
+          tinyWindow.loadFile('sync.html');
+          tinyWindow.setMenuBarVisibility(false);
+          // Minimized Functionality 
+          tinyWindow.on('minimize',function(event){
+            event.preventDefault();
+            tinyWindow.hide();
+          });
+          tinyWindow.on('close', function (event) {
+            if(!app.isQuiting){
+              event.preventDefault();
+              tinyWindow.hide();
+            }
+            return false;
+          });
+
+          appReadyCall();
+        }
+      });
+      app.on('activate', function () {
+        if (BrowserWindow.getAllWindows().length === 0) credsWindow()
+      });
+    });
+  }
+
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 });
 
+
+// Application wont launch test case - call runApp()
+
+
 app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
+  console.log('Please wait while we check for updates');
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Updation Checking');
+  });
+  autoUpdater.on('update-available', (ev, info) => {
+    console.log(ev+":"+info);
+  })
+  autoUpdater.on('update-not-available', (ev, info) => {
+    console.log(ev+":"+info);
+  })
+  autoUpdater.on('error', (ev, err) => {
+    console.log(ev+":"+info);
+  })
+  autoUpdater.on('download-progress', (ev, progressObj) => {
+    console.log(ev+":"+progressObj);
+  })
+  autoUpdater.on('update-downloaded', (ev, info) => {
+    console.log(ev+":"+info);
+  });
 });
 //Error - onblick inbetween causing issue -> causing HRtalk to repeat
     // Goes to am_I_idle
