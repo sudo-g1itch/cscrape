@@ -323,7 +323,7 @@ app.on('window-all-closed', function () {
 
 // Application wont launch test case - call runApp()
 
-
+runApp();
 app.on('ready', function()  {
   console.log('Please wait while we check for updates');
   autoUpdater.on('checking-for-update', () => {
